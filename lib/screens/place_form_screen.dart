@@ -1,3 +1,4 @@
+import 'package:camera_and_map/components/widgets/image_input.dart';
 import 'package:flutter/material.dart';
 
 class PlaceFormScreen extends StatefulWidget {
@@ -13,9 +14,18 @@ class _PlaceFormScreenState extends State<PlaceFormScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Novo Local'),
+        title: const Text('Novo Local'),
       ),
-      body: Text('Formulário!!!'),
+      body: const Column(
+        children: [
+          TextField(
+            decoration: InputDecoration(
+              labelText: 'Título',
+            ),
+          ),
+          ImageInput(),
+        ],
+      ),
     );
   }
 }
