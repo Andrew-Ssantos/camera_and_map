@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink).copyWith(
           primary: Colors.pink,
-          secondary: Colors.pink.shade100,
+          secondary: Colors.lightGreen.shade400,
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
