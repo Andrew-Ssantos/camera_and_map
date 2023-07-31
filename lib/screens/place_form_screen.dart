@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera_and_map/components/widgets/image_input.dart';
+import 'package:camera_and_map/components/widgets/location_input.dart';
 import 'package:camera_and_map/providers/camera_and_map.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -59,6 +60,8 @@ class _PlaceFormScreenState extends State<PlaceFormScreen> {
                       ),
                       const SizedBox(height: 10),
                       ImageInput(_selectImage),
+                      const SizedBox(height: 10),
+                      LocationInput(),
                     ],
                   ),
                 ),

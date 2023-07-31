@@ -21,22 +21,29 @@ class PlaceListScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Consumer<CameraAndMap>(
-        child: const Center(
-          child: Text('Nenhum local cadastrado!'),
-        ),
-        builder: (ctx, cameraAndMap, child) => cameraAndMap.itemsCount == 0
-            ? child!
-            : ListView.builder(
-                itemCount: cameraAndMap.itemsCount,
-                itemBuilder: (ctx, i) => ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage:
-                        FileImage(cameraAndMap.itemByIndex(i).image),
-                  ),
-                  title: Text(cameraAndMap.itemByIndex(i).title),
-                  onTap: () {},
+      body: FutureBuilder(
+        future: Provider.of<CameraAndMap>(context, listen: false).loadPlaces(),
+        builder: (ctx, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? const Center(child: CircularProgressIndicator())
+            : Consumer<CameraAndMap>(
+                child: const Center(
+                  child: Text('Nenhum local cadastrado!'),
                 ),
+                builder: (ctx, cameraAndMap, child) =>
+                    cameraAndMap.itemsCount == 0
+                        ? child!
+                        : ListView.builder(
+                            itemCount: cameraAndMap.itemsCount,
+                            itemBuilder: (ctx, i) => ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: FileImage(
+                                    cameraAndMap.itemByIndex(i).image),
+                              ),
+                              title: Text(cameraAndMap.itemByIndex(i).title),
+                              onTap: () {},
+                            ),
+                          ),
               ),
       ),
     );
