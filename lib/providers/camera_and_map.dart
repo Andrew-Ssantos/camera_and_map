@@ -15,8 +15,7 @@ class CameraAndMap with ChangeNotifier {
           (item) => Place(
             id: item['id'],
             title: item['title'],
-            location:
-                PlaceLocation(latitude: 10, longitude: 10, address: 'Teste'),
+            location: PlaceLocation(latitude: 10, longitude: 10),
             image: File(item['image']),
           ),
         )
@@ -41,7 +40,7 @@ class CameraAndMap with ChangeNotifier {
       id: Random().nextDouble().toString(),
       title: title,
       image: image,
-      location: PlaceLocation(latitude: 10, longitude: 10, address: 'Teste'),
+      location: PlaceLocation(latitude: 10, longitude: 10),
     );
 
     _items.add(newPlace);

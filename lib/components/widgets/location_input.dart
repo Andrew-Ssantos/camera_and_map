@@ -1,3 +1,5 @@
+import 'package:camera_and_map/screens/map_screen.dart';
+import 'package:camera_and_map/utils/location_util.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 
@@ -13,8 +15,25 @@ class _LocationInputState extends State<LocationInput> {
 
   Future<void> _getCurrentUserLocation() async {
     final locData = await Location().getLocation();
-    print(locData.longitude);
-    print(locData.altitude);
+
+    final staticMapImageUrl = LocationUtil.generateLocationPreviewImage(
+      latitude: locData.latitude,
+      longitude: locData.longitude,
+    );
+
+    setState(() {
+      _previewImageUrl = staticMapImageUrl;
+    });
+  }
+
+  Future<void> _selectOnMap() async {
+    final selectedLocation = await Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => const MapScreen(),
+      ),
+    );
+    if (selectedLocation == null) return;
   }
 
   @override
@@ -47,7 +66,7 @@ class _LocationInputState extends State<LocationInput> {
               ),
             ),
             OutlinedButton.icon(
-              onPressed: () {},
+              onPressed: _selectOnMap,
               icon: Icon(Icons.map),
               label: Text(
                 'Selecione a localização',
