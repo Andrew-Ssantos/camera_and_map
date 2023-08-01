@@ -54,6 +54,7 @@ class _LocationInputState extends State<LocationInput> {
                   width: double.infinity,
                 ),
         ),
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
