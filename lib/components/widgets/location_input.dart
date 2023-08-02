@@ -1,10 +1,13 @@
 import 'package:camera_and_map/screens/map_screen.dart';
 import 'package:camera_and_map/utils/location_util.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class LocationInput extends StatefulWidget {
-  const LocationInput({super.key});
+  final Function onSelectPosition;
+
+  const LocationInput(this.onSelectPosition, {super.key});
 
   @override
   State<LocationInput> createState() => _LocationInputState();
@@ -13,12 +16,10 @@ class LocationInput extends StatefulWidget {
 class _LocationInputState extends State<LocationInput> {
   late String _previewImageUrl = '';
 
-  Future<void> _getCurrentUserLocation() async {
-    final locData = await Location().getLocation();
-
+  void _showPreview(double? lat, double? lng) {
     final staticMapImageUrl = LocationUtil.generateLocationPreviewImage(
-      latitude: locData.latitude,
-      longitude: locData.longitude,
+      latitude: lat,
+      longitude: lng,
     );
 
     setState(() {
@@ -26,14 +27,29 @@ class _LocationInputState extends State<LocationInput> {
     });
   }
 
+  Future<void> _getCurrentUserLocation() async {
+    try {
+      final locData = await Location().getLocation();
+
+      _showPreview(locData.latitude, locData.longitude);
+      LatLng convertedLocData = LatLng(locData.latitude!, locData.longitude!);
+      widget.onSelectPosition(convertedLocData);
+    } catch (e) {
+      return;
+    }
+  }
+
   Future<void> _selectOnMap() async {
-    final selectedLocation = await Navigator.of(context).push(
+    final LatLng selectedPosition = await Navigator.of(context).push(
       MaterialPageRoute(
         fullscreenDialog: true,
         builder: (context) => const MapScreen(),
       ),
     );
-    if (selectedLocation == null) return;
+
+    _showPreview(selectedPosition.latitude, selectedPosition.longitude);
+
+    widget.onSelectPosition(selectedPosition);
   }
 
   @override

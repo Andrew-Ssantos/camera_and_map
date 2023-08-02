@@ -4,6 +4,7 @@ import 'package:camera_and_map/components/widgets/image_input.dart';
 import 'package:camera_and_map/components/widgets/location_input.dart';
 import 'package:camera_and_map/providers/camera_and_map.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class PlaceFormScreen extends StatefulWidget {
@@ -16,20 +17,35 @@ class PlaceFormScreen extends StatefulWidget {
 class _PlaceFormScreenState extends State<PlaceFormScreen> {
   final _titleController = TextEditingController();
   File? _pickedImage;
+  LatLng _pickedPosition = LatLng(0, 0);
 
   void _selectImage(File pickedImage) {
-    _pickedImage = pickedImage;
+    setState(() {
+      _pickedImage = pickedImage;
+    });
+  }
+
+  void _selectPosition(LatLng position) {
+    setState(() {
+      _pickedPosition = position;
+    });
+  }
+
+  bool _isValidForm() {
+    return _titleController.text.isNotEmpty && _pickedImage != null;
   }
 
   void _submitForm() {
-    if (_titleController.text.isEmpty || _pickedImage == null) {
-      return;
-    }
+    if (!_isValidForm()) return;
 
-    Provider.of<CameraAndMap>(context, listen: false).addPlace(
-      _titleController.text,
-      _pickedImage!,
-    );
+    Provider.of<CameraAndMap>(context, listen: false)
+        .addPlace(
+          _titleController.text,
+          _pickedImage!,
+          _pickedPosition,
+        )
+        .then((value) => print(
+            'Título:${_titleController.text}\nURL_Imagem:${_pickedImage}\nPosição:${_pickedPosition}'));
 
     Navigator.of(context).pop();
   }
@@ -53,6 +69,9 @@ class _PlaceFormScreenState extends State<PlaceFormScreen> {
                   child: Column(
                     children: [
                       TextField(
+                        onChanged: (text) {
+                          setState(() {});
+                        },
                         controller: _titleController,
                         decoration: const InputDecoration(
                           labelText: 'Título',
@@ -61,14 +80,14 @@ class _PlaceFormScreenState extends State<PlaceFormScreen> {
                       const SizedBox(height: 10),
                       ImageInput(_selectImage),
                       const SizedBox(height: 10),
-                      LocationInput(),
+                      LocationInput(_selectPosition),
                     ],
                   ),
                 ),
               ),
             ),
             ElevatedButton.icon(
-              onPressed: _submitForm,
+              onPressed: _isValidForm() ? _submitForm : null,
               style: ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll(
                   Theme.of(context).colorScheme.secondary,

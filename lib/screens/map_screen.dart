@@ -20,7 +20,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  late LatLng _pickedPosition;
+  LatLng _pickedPosition = const LatLng(0, 0);
 
   void _selectPosition(LatLng position) {
     setState(() {
@@ -34,6 +34,15 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Selecione...'),
+        actions: [
+          if (!widget.isReadOnly)
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pop(_pickedPosition);
+              },
+              icon: const Icon(Icons.check),
+            ),
+        ],
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
@@ -44,14 +53,14 @@ class _MapScreenState extends State<MapScreen> {
           zoom: 13,
         ),
         onTap: widget.isReadOnly ? null : _selectPosition,
-        // markers: _pickedPosition == null
-        // ? null
-        // : {
-        // Marker(
-        // markerId:  const MarkerId('p1'),
-        // position: _pickedPosition,
-        // ),
-        // },
+        markers: {
+          Marker(
+            markerId: const MarkerId('p1'),
+            position: widget.isReadOnly
+                ? widget.initialLocation.toLatLng()
+                : _pickedPosition,
+          ),
+        },
       ),
     );
   }

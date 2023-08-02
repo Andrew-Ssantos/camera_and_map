@@ -41,7 +41,14 @@ class PlaceListScreen extends StatelessWidget {
                                     cameraAndMap.itemByIndex(i).image),
                               ),
                               title: Text(cameraAndMap.itemByIndex(i).title),
-                              onTap: () {},
+                              subtitle: Text(
+                                  cameraAndMap.itemByIndex(i).location.address),
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                  AppRoutes.PLACE_DETAIL,
+                                  arguments: cameraAndMap.itemByIndex(i),
+                                );
+                              },
                             ),
                           ),
               ),
